@@ -495,7 +495,7 @@ function isFiltered(f){
 }
 
 function publicScreenings(f){
-  return (f.screenings||[]).filter(s => pmToggle || String(s.AudienceType).match(/general public/i));
+  return (f.screenings||[]).filter(s => pmToggle || String(s.AudienceType).match(/(general )?public/i));
 }
 function allScreenings(f){ return (f.screenings||[]).slice(); }
 
@@ -636,7 +636,7 @@ rows = scrAll.map(function(s){
       var rc = rushChance(f, s);
       var rr = rc.pct;
       var isOff = rc.offSale;
-      var aud = String(s.AudienceType||"").match(/general public/i) ? '<span class="aud aud-public">Public</span>' : '<span class="aud aud-pm">Press</span>';
+      var aud = String(s.AudienceType||"").match(/(general )?public/i) ? '<span class="aud aud-public">Public</span>' : '<span class="aud aud-pm">Press</span>';
       var rush = '<span class="rush" style="color:'+rushColor(rr)+'">'+(isOff?'⚡':'rush ')+rr+'%</span>';
       var cls = isOff ? ' srow offsale' : '';
       return '<div class="srow'+cls+'" data-slug="'+esc(f.slug)+'" data-date="'+esc(s.Date)+'" data-start="'+esc(s.StartTime)+'" data-venue="'+esc(s.Venue)+'" data-room="'+esc(s.Room||"")+'" title="'+(isOff?'Sold out — rush only, harder to get in':'Open screening overview')+'">'+
@@ -1042,7 +1042,7 @@ function starPowerDelta(f){
   return 0;
 }
 function publicScreenings(f){
-  return (f.screenings||[]).filter(function(x){ return /general public/i.test(x.AudienceType); })
+  return (f.screenings||[]).filter(function(x){ return /(general )?public/i.test(x.AudienceType); })
     .sort(function(a,b){
       return parseDateNum(a.Date)-parseDateNum(b.Date) || timeMin(a.StartTime)-timeMin(b.StartTime);
     });
@@ -1131,7 +1131,7 @@ function rushCardHTML(f, s){
   }
   var sheet = s.RushScore!=null
     ? '<div class="rush-sheet">festival sheet · <b>'+esc(Number(s.RushScore).toFixed(0))+'%</b> · '+esc(String(s.RushDifficulty||"").trim()||"—")+'</div>' : "";
-  var pressNote = !String(s.AudienceType||"").match(/general public/i)
+  var pressNote = !String(s.AudienceType||"").match(/(general )?public/i)
     ? '<div class="rush-note">Press &amp; Market screening — rush lines apply mainly to public screenings.</div>' : "";
   var soldNote = r.offSale
     ? '<div class="rush-note" style="color:#c23b3b;font-weight:600">⚠ Sold out — rush is the only option.</div>' : "";
@@ -1163,7 +1163,7 @@ function altSection(ev){
   var rows = [];
   FILMS.forEach(function(g){
     (g.screenings||[]).forEach(function(x){
-      if(!pmToggle && !String(x.AudienceType).match(/general public/i)) return;
+      if(!pmToggle && !String(x.AudienceType).match(/(general )?public/i)) return;
       if(String(x.Date)!==String(ev.s.Date)) return;
       if(!one && String(x.Venue)!==String(ev.s.Venue)) return;
       if(timeMin(x.StartTime) <= st) return;
@@ -1203,7 +1203,7 @@ function buildOverviewBody(ev){
   var f = ev.film, s = ev.s;
   var isPick = picks.has(f.slug);
   var cap = s.Capacity ? '<span class="cap">'+esc(s.Capacity)+' seats</span>' : "";
-  var aud = String(s.AudienceType||"").match(/general public/i) ? '<span class="aud aud-public">Public</span>' : '<span class="aud aud-pm">Press</span>';
+  var aud = String(s.AudienceType||"").match(/(general )?public/i) ? '<span class="aud aud-public">Public</span>' : '<span class="aud aud-pm">Press</span>';
   var prem = f.premiere ? '<span class="badge badge-premiere">'+esc(f.premiere)+'</span>' : "";
   var hero = imageUrl(f,true);
   document.getElementById("ovContent").innerHTML =
